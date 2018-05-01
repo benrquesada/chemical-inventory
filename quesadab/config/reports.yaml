@@ -1,0 +1,90 @@
+ReportTypes:
+  Inputs:
+    Building: 0
+    Floor: 1
+    Room: 2
+    Storage: 3
+  Hazard:
+    flammable:
+       name: "Flammable"
+       id: "flam"
+    flamm_solid:
+       name: "Flammable Solid"
+       id: "flam_solid"
+    health:
+       name: "Health Hazard"
+       id: "hh"
+    org_acid:
+       name: "Organic Acid"
+       id: "org_acid"
+    inorg_acid:
+       name: "Inorganic Acid"
+       id: "inorg_acid"
+    base:
+       name: "Base"
+       id: "base"
+    oxi:
+       name: "Oxidizer"
+       id: "oxi"
+    reactive:
+       name: "Reactive"
+       id: "reactive"
+    gen_haz:
+       name: "General Hazard"
+       id: "gen_haz"
+  Ts_Hazard:
+    pressure:
+      name: "Pressure Former"
+      id: "pres"
+    peroxide:
+      name: "Peroxide Former"
+      id: "per"
+    stabalizer:
+      name: "Requires Stabalizer"
+      id: "req_stab"
+    tox_form:
+       name: "Forms Toxins Over Time"
+       id: "tox_form"
+  Pl_Acute:
+    p_listed:
+       name: "P Listed"
+       id: "p_list"
+
+  LocationBased:
+      name: "Location"
+      id: "loc"
+      LocationQuantity:
+        options:
+          - Building
+            1
+          - Floor
+            2
+          - Room
+            3
+          - Storage
+            4
+          - Hazard
+            5
+        row_title:
+          - Building
+          - Floor
+          - Room
+          - Storage
+          - Barcode
+          - Chemical Name
+          - Current Quantity
+          - Current Unit
+          - Primary Hazard
+        queries:
+            Building: objects[row].storageId.roomId.floorId.buildId.name
+            Floor: objects[row].storageId.roomId.floorId.name
+            Room: objects[row].storageId.roomId.name
+            Storage: objects[row].storageId.name
+            Chemical_Name: objects[row].chemId.name
+            Primary_Hazard: objects[row].chemId.primaryHazard
+            Barcode: objects[row].barcodeId
+            Current_Quantity: objects[row].currentQuantity
+            Current_Unit: objects[row].currentQuantityUnit
+            Container_Capacity: objects[row].capacity
+            Container_Capacity_Unit: objects[row].capacityUnit
+            Manufacturer: objects[row].manufacturer

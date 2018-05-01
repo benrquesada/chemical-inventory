@@ -1,0 +1,182 @@
+<h1 align="center">
+  <a href="../../../ViewChemical/{{chemical.chemId}}/" >{{chemical.name}}</a>
+
+  <div class="barcode" id="barcodeDiv{{container.barcodeId}}">
+    <svg id="barcode{{container.barcodeId}}"></svg>
+  </div>
+  <button class="btn btn-primary" onclick="printBarcode('barcodeDiv{{container.barcodeId}}');">Print Barcode</button>
+</h1>
+
+<script type="text/javascript">
+  JsBarcode("#barcode{{container.barcodeId}}", "{{container.barcodeId}}", {
+    height:30,
+    fontSize: 15,
+    background: '' //set value to none to match background color of table row
+  });
+</script>
+
+<div class="col-md-8 col-md-offset-2">
+    <ul class="nav nav-tabs">
+        {% if container.checkedOut == False %}
+          <li class="active"><a data-toggle="tab" href="#checkout">Check Out Container</a></li>
+        {% else %}
+        <li class="active"><a data-toggle="tab" href="#checkin">Check In Container</a></li>
+        {% endif %}
+        <li><a data-toggle="tab" href="#history">History of Container</a></li>
+        <li><a data-toggle="tab" href="#dispose">Dispose of Container</a></li>
+
+        {# example code for tabs found here: http://jsfiddle.net/xfw8t/12/ #}
+    </ul>
+     <div class="tab-content">
+       {% if container.checkedOut == False %} {# Only render if container is not checked out. Will not show up in page source if container has been checked out #}
+        <div id="checkout" class="tab-pane fade in active">
+          <h3>Check Out</h3>
+            <div class="form">
+              <form name="checkOutForm" id="checkOutForm" method="post">
+                <label for="name" class="col-sm-2">Name:</label>
+                  <input class="form-control" type="text" name="chemname" value="{{chemical.name}}" readonly>
+                <label for="barcode" class="col-sm-2">Barcode:</label>
+                  <input class="form-control" type="text" name="barcode" value="{{container.barcodeId}}" readonly>
+                <label for="quantity" class="col-sm-2"> Quantity:</label>
+                  <input class="form-control" type="varchar" name="quantity" value="{{container.currentQuantity}} {{container.currentQuantityUnit}}" readonly>
+                <label for="locationShow" class="col-sm-2"> Current Location:</label>
+                {% if container.storageId.roomId.name != container.storageId.name %}
+                  <input class="form-control" type="varchar" name="locationShow" value="{{container.storageId.roomId.floorId.buildId.name}} {{container.storageId.roomId.name}}  {{container.storageId.name}}" readonly>
+                {% else %}
+                  <input class="form-control" type="varchar" name="locationShow" value="{{container.storageId.roomId.floorId.buildId.name}} {{container.storageId.roomId.name}}" readonly>
+                {% endif %}
+                <input type="hidden" value="{{container.storageId.sId}}" name="location">
+                <label for="Class Name" class="col-sm-2"> Reason for Checkout:</label>
+                  <input class="form-control" id="class" type="text" placeholder="Reason" name="class" value=''>
+                <label for="storage" class="col-sm-2"> New Location:</label>
+                  <select id="storage" name="storageId" class="form-control" required>
+                    <option selected disabled value="">Select One</option>
+                    {% for building in buildingList %}
+                      <optgroup label="{{building.name}} Building"></optgroup>
+                      {% for storage in storageList %}
+                        {% if storage.roomId.floorId.buildId.bId == building.bId %}
+                          {% if storage.roomId.name == storage.name %}
+                            <option value="{{storage.sId}}">Room {{storage.roomId.name}}</option>
+                          {% else %}
+                            <option value="{{storage.sId}}">Room {{storage.roomId.name}} ({{storage.name}})</option>
+                          {% endif %}
+                        {% endif %}
+                      {% endfor %}
+                    {%endfor%}
+                  </select>
+                <label for="Professor" class="col-sm-2"> Person Responsible:</label>
+                  <input class="form-control" id="profname" type="text" placeholder="Name of person responsible" name="forProf" value=''>
+                  <input type="hidden" name="formName" value="checkOutForm">
+                  <label for="checkout"></label>
+                  <br>
+                <div class="form-group pull-right">
+                  <button id="checkout" type="submit" class="btn btn-primary">Check Out Chemical</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          {%else%}
+            <div id="checkin" class="tab-pane fade in active">
+            {% include "snips/checkIn.html" %}
+            </div>
+          {% endif %}
+       <div id="history" class="tab-pane fade">
+          <h3>History</h3>
+          <div class="container-fluid">
+            <table class="table" id="createRecord">
+              <thead>
+                <tr>
+                  <th>Created On</th>
+                  <th>Initial Location</th>
+                  <th>Initial Amount</th>
+                  <th>Created By</th>
+                </tr>
+              </thead>
+              <tr>
+                <td>{{histories[0].modDate}}</td>
+                {% if histories[0].movedTo.roomId.name == histories[0].movedTo.name %}
+                  <td>{{histories[0].movedTo.roomId.floorId.buildId.name}} Building, Room: {{histories[0].movedTo.roomId.name}}</td>
+                {% else %}
+                  <td>{{histories[0].movedTo.roomId.floorId.buildId.name}} Building, Room: {{histories[0].movedTo.roomId.name}} ({{histories[0].movedTo.name}})</td>
+                {% endif %}
+                <td>{{histories[0].pastQuantity}} {{histories[0].pastUnit}}</td>
+                <td>{{histories[0].modUser}}</td>
+              </tr>
+            </table>
+            <table class="table table-striped" id="conthistory">
+              <thead>
+                <tr>
+                  <th>Date Modified</th>
+                  <th>Action</th>
+                  <th>Moved From</th>
+                  <th>Moved To</th>
+                  <th>Current Amount</th>
+                  <th>Last Amount</th>
+                  <th>Modified By</th>
+                  <th>Checked Out By</th>
+                </tr>
+              </thead>
+              {% for history in histories[1::] %}
+              <tr>
+                <td>{{history.modDate}}</td>
+                <td>{{history.action}}</td>
+                {% if history.movedFrom.roomId.name == history.movedFrom.name %}
+                  <td>{{history.movedFrom.roomId.floorId.buildId.name}} Building, Room: {{history.movedFrom.roomId.name}}</td>
+                {% else %}
+                  <td>{{history.movedFrom.roomId.floorId.buildId.name}} Building, Room: {{history.movedFrom.roomId.name}} ({{history.movedFrom.name}})</td>
+                {% endif %}
+                {% if history.movedTo.roomId.name == history.movedTo.name %}
+                  <td>{{history.movedTo.roomId.floorId.buildId.name}} Building, Room: {{history.movedTo.roomId.name}}</td>
+                {% else %}
+                  <td>{{history.movedTo.roomId.floorId.buildId.name}} Building, Room: {{history.movedTo.roomId.name}} ({{history.movedTo.name}})</td>
+                {% endif %}
+                <td>{{container.currentQuantity}} {{container.currentQuantityUnit}}</td>
+                <td>{{history.pastQuantity}} {{history.pastUnit}}</td>
+                <td>{{history.modUser}}</td>
+                <td>{{container.checkedOutBy}}</td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+
+        <script>
+            $(document).ready(function(){
+            $('#conthistory').dataTable({
+              "ordering": false,
+              "searching": false
+              });
+            });
+
+            </script>
+
+            {# DISPOSE OF CONTAINER TAB#}
+        <div id="dispose" class="tab-pane fade">
+          <div class="text-center">
+            <br>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#disposeModal">Dispose this container</button> {# This could look a lot better, and maybe function better #}
+          </div>
+          <div class="modal fade" id="disposeModal" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-labeledby="disposeLabel">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <h4 class="modal-title" id="disposeLabel">Dispose this container</h4>
+                </div>
+                <div class="modal-body text-center">
+                  This will remove the container from the system. Are you sure you want to dispose of it?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-success" data-dismiss="modal">No</button>
+                  <a class="btn btn-danger" href="dispose/">Yes</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+    
+<script src="/static/js/local/printBarcode.js"></script>

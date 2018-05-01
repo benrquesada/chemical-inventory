@@ -1,0 +1,71 @@
+<div class="form container text-center">
+  <strong><p style="color:#e32; display:inline">*</p> indicates required field</strong>
+  <form name="addWas" method="post" class="form-group">
+    <input type="hidden" name="formName" value="addWas">
+    {%  for group in wasteConfig['addWasteRequired']  %}
+        {% if group.id == 'wQuant' %}
+          <div class="form-group row" id="{{group['id']}}Parent">
+            <label for="{{group.id}}" class="col-xs-6">{{group.name}}: <p style="color:#e32; display:inline">*</p></label>
+            <div class="col-xs-4">
+              <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" oninput="checkName()" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control" required>
+            </div>
+          </div>
+        {% endif %}
+        {% if group.id == 'wQuantUnit' %}
+          <div class="form-group row" id="{{group['id']}}Parent">
+            <label for="{{ group['name'] }}" class="col-xs-6">{{ group['name'] }}: <p style="color:#e32; display:inline">*</p></label>
+             <div class="col-xs-4">
+              <select id="{{group['id']}}" name="{{group['id']}}" class="form-control" {{group.special}}>
+                <option selected disabled value="">Select One</option>
+                  {% for measure in group.options %}
+                   {% if measure.measure != "" %}
+                    <optgroup label="{{measure.measure}}"></optgroup>
+                    {% for unit in measure.units %}
+                      <option value="{{ unit }}">{{ unit }}</option>
+                    {% endfor %}
+                   {% else %}
+                    {% for unit in measure.units %}
+                      <option value="{{ unit }}">{{ unit }}</option>
+                    {% endfor %}
+                   {% endif %}
+                  {% endfor %}
+              </select>
+              <span class="label label-danger hidden messages" id="{{group.id}}Message">Measurements should be of the same type.</span>
+             </div>
+          </div>
+        {% endif %}
+        {% if group.id == 'wState' %}
+          <div class="form-group row" id="{{group['id']}}Parent">
+            <label for="{{group.id}}" class="col-xs-6">{{group.name}}: <p style="color:#e32; display:inline">*</p></label>
+            <div class="col-xs-4">
+              <select id="{{  group['id']  }}" name="{{  group['id']  }}" class="form-control" required>
+                <option selected disabled value="">Select One</option>
+                {%  for selection in group['selections']  %}
+                {# Dropdown selections #}
+                <option value="{{  selection  }}">{{  selection  }}</option>
+                {%  endfor  %}
+              </select>
+            </div>
+          </div>
+        {% endif %}
+    {%endfor%}
+
+    {%  for group in wasteConfig['addWasteNotRequired']  %}
+      <div class="form-group row" id="{{group['id']}}Parent">
+        {% if group.special == 'required' %}
+          <label for="{{group['id']}}" class="col-xs-6">{{group['name']}}: <p style="color:#e32; display:inline">*</p></label>
+        {% else %}
+          <label for="{{group['id']}}" class="col-xs-6">{{group['name']}}:</label>
+        {% endif %}
+        <div class= "col-xs-4">
+          <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" step="any" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control">
+        </div>
+      </div>
+    {%endfor%}
+
+    <br>
+    <div class="clearfix"></div>
+  <input class="btn btn-primary btn-lg" id="addWasteSubmit" type="submit" value="Submit">
+  </form>
+</div>
+<script src="/static/js/local/wastebuilder.js"></script>

@@ -1,0 +1,106 @@
+<div class="clearfix"></div>
+<script src="/static/js/local/createBarcode.js"></script>
+<script src="/static/js/local/checkBar.js"></script>
+<div class="form col-sm-6 col-sm-offset-3">
+  <strong><p style="color:#e32; display:inline">*</p> indicates required field</strong>
+  <form name="addCont" id="addCont" method="post">
+    <input type="hidden" id="chemId" name="chemId" value="{{chemInfo.chemId}}"/>
+    <input type="hidden" name="formName" value="addCont"/>
+    <input type="hidden" id="migrated" name="migrated" value={{migrated}}>
+      {% for group in contConfig['containerInformation'] %}
+      {% if group.special != "noShow" %}
+        {% if group.type != 'select' %}
+          {% if group.special == 'readonly' %}
+            <div class="form-group row">
+              <label for="{{group.id}}" class="col-sm-6">{{group.name}}: <p style="color:#e32; display:inline">*</p></label>
+              <div class="col-sm-6">
+                <input class="form-control" type="{{group.type}}" name="{{group.id}}" id="{{group.id}}" value="{{barcode}}" {{group.special}}/>
+                <div class="barcode" id="barcodeDiv{{barcode}}">
+                  <div class="printInfo" style="font-size: small;">
+                    {{chemInfo.name}}
+                  </div>
+                  <svg name="barcodeSVG" id="barcode{{barcode}}" value="{{barcode}}"></svg>
+                  <div class="printInfo" style="font-size: x-small;">
+                    Received on: {{date}}
+                  </div>
+                </div>
+                <script>
+                JsBarcode('#barcode{{barcode}}', '{{barcode}}', {
+                              height:30,
+                              fontSize: 15
+                             });
+                </script>
+                {# Hidden manual entry barcode field #}
+                <input type="text" class="form-control" id="null{{group.id}}" name="hidden{{group.id}}" style="visibility:hidden" oninput="spaceCheck(this); JsBarcode('#barcode{{barcode}}', this.value, {height:30, fontSize: 15});">
+                <span class="label label-danger hidden messages" id="{{group.id}}Message">Barcode must not include any spaces or special characters</span>
+                {# Manual VS Autopopulated barcode select #}
+                <label for="manualSel">Manually enter a barcode</label>
+                <input type="checkbox" id="manualSel" onclick="manualBar()">
+              </div>
+            </div>
+          {% else %}
+            <div class="form-group row" id="{{group.id}}Parent">
+              <label for="{{group.id}}" class="col-sm-6">{{group.name}}: <p style="color:#e32; display:inline">*</p></label>
+              <div class="col-sm-6">
+              <input class="form-control" type="{{group.type}}" name="{{group.id}}" id="{{group.id}}" placeholder="{{group.placeholder}}" min='0.01' max='10000' step="0.01" {{group.special}}/>
+              {% if group.id == 'capacity' %}
+                <span class="label label-danger hidden messages" id="{{group.id}}Message">Value must be equal to or greater than value of Current Quantity</span>
+              {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        {% else %}
+          {% if group.id != 'storageId' %}
+            <div class="form-group row" id="{{group.id}}Parent">
+              <label for="{{ group['name'] }}" class="col-sm-6">{{ group['name'] }}: <p style="color:#e32; display:inline">*</p></label>
+              <div class="col-sm-6">
+                <select id="{{group['id']}}" name="{{group['id']}}" class="form-control" {{group.special}}>
+                  <option selected disabled value="">Select One</option>
+                    {% for measure in group.options %}
+                     {% if measure.measure != "" %}
+                      <optgroup label="{{measure.measure}}"></optgroup>
+                      {% for unit in measure.units %}
+                        <option value="{{ unit }}">{{ unit }}</option>
+                      {% endfor %}
+                     {% else %}
+                      {% for unit in measure.units %}
+                        <option value="{{ unit }}">{{ unit }}</option>
+                      {% endfor %}
+                     {% endif %}
+                    {% endfor %}
+                </select>
+                <span class="label label-danger hidden messages" id="{{group.id}}Message">Measurements should be of the same type.</span>
+              </div>
+            </div>
+          {% else %}
+            <div class="form-group row">
+              <label for="{{group.name}}" class="col-sm-6">{{group.name}}: <p style="color:#e32; display:inline">*</p></label>
+                <div class="col-sm-6">
+                  <select id="{{group.id}}" name="{{group.id}}" class="form-control" {{group.special}}>
+                    <option selected disabled value="">Select One</option>
+                    {% for building in buildingList %}
+                      <optgroup label="{{building.name}} Building"></optgroup> {# Break dropdown up by building, but user cannot select a building #}
+                      {% for storage in storageList %}
+                        {% if storage.roomId.floorId.buildId.bId == building.bId %}
+                          {% if storage.roomId.name == storage.name %} {# Checking if storage name and room name are the same. #}
+                            <option value="{{storage.sId}}">Room {{storage.roomId.name}}</option>
+                          {% else %}
+                            <option value="{{storage.sId}}">Room {{storage.roomId.name}} ({{storage.name}})</option>
+                          {% endif %}
+                        {% endif %}
+                      {% endfor %}
+                    {%endfor%}
+                  </select>
+                </div>
+              </div>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+      {% endfor %}
+      <input type="hidden" name="user" value="testUser">
+      <input type="submit" class="btn btn-primary" id="submitCont" value="Submit" onclick="return checkVals({{contConfig['options']}}) && printBarcode('{{barcode}}');">
+  </form>
+</div>
+<script src="/static/js/local/measurements.js-master/metrics.js"></script>
+<script src="/static/js/local/checkQuantity.js"></script>
+<script src="/static/js/local/alertFade.js"></script>

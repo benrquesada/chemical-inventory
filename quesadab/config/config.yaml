@@ -1,0 +1,137 @@
+#: CONFIGURATION
+# Top-level keys are categorical; where possible, introduce
+# new top-level keys to keep constants/ideas separate.
+# Note that we parse this with the configuration library,
+# which has some fancy extensions to allow referencing between
+# different elements in the YAML file.
+# See http://configure.readthedocs.io/en/latest/#
+application:
+  title: "Berea Chemical Inventory System"
+  default: index
+
+
+databases:
+  dynamic:
+    roles:
+      filename: data/roles.sqlite
+    inventory:
+      filename: data/inventory.sqlite
+  static:
+    cispro:
+      filename: data/full_db.sqlite
+      #filename: data/sample.sqlite
+
+roles:
+  admin:
+    printable: "Master Administrator"
+  systemAdmin:
+    printable: "System Administrator (EHS Workers)"
+  superUser:
+    printable: "Super User (Faculty & Staff)"
+  systemUser:
+    printable: "System User (Students)"
+
+sys:
+  debug: True
+  host: "0.0.0.0"
+  port: 8080
+
+# Color Codes
+hazards:
+  "Base":
+    hazardColor: "Green"
+    textColor: "#FFFFFF"
+    hexColor: "#329032"
+  "Flammable":
+    hazardColor: "Red"
+    textColor: "#FFFFFF"
+    hexColor: "#FF0000"
+  "Flammable Solid":
+    hazardColor: "Copper"
+    textColor: "White"
+    hexColor: "#B87333"
+  "Health Hazard":
+    hazardColor: "Blue"
+    textColor: "#FFFFFF"
+    hexColor: "#0000FF"
+  "Inorganic Acid":
+    hazardColor: "Rose"
+    textColor: "#333333"
+    hexColor: "#FFE4E1"
+  "Organic Acid":
+    hazardColor: "Lavender"
+    textColor: "#333333"
+    hexColor: "#E6E6FA"
+  "Oxidizer":
+    hazardColor: "Yellow"
+    textColor: "#333333"
+    hexColor: "#FFFF00"
+  "Reactive":
+    hazardColor: "Orange"
+    textColor: "#FFFFFF"
+    hexColor: "#FFA500"
+  "General Hazard":
+    hazardColor: "N/A"
+    textColor: "#333333"
+    hexColor: ""
+
+# Navigation bars
+admin:
+  - title: "Home"
+    link: "/Home/"
+  - title: "View All Chemicals"
+    link: "/ChemTable/"
+  - title: "Migrate Chemical"
+    link: "/migrateChem/"
+  - title: "Add Chemical"
+    link: "/AddChemical/"
+  - title: "Check In"
+    link: "/CheckIn/"
+  - title: "Check Out"
+    link: "/CheckOut/"
+  - title: "Reports"
+    link: "/Report/"
+    
+superUser:
+  - title: "View All Chemicals"
+    link: "/ChemTable/"
+  - title: "Request Access For a Student"
+    link: "/RequestUserAccess/"
+  - title: "Reports"
+    link: "/Report/"
+
+systemUser:
+  - title: "Home"
+    link: "/ChemTable/"
+
+systemAdmin:
+  - title: "Home"
+    link: "/Home/"
+  - title: "View All Chemicals"
+    link: "/ChemTable/"
+  - title: "Migrate Chemical"
+    link: "/migrateChem/"
+  - title: "Add Chemical"
+    link: "/AddChemical/"
+  - title: "Check In"
+    link: "/CheckIn/"
+  - title: "Check Out"
+    link: "/CheckOut/"
+  - title: "Reports"
+    link: "/Report/"
+
+flask:
+  # Secret key for signing cookies
+  # Only needed for admin module, and we don't seem to rely on
+  # it. Hence, we will randomly generate a key.
+  secretKey: RANDOM
+
+export:
+  path: "application/reports/"
+
+DEBUG:
+   user: "ballz" #admin
+  # user: "robinsonkal" #systemAdmin
+  # user: "saderholmm" #superUser
+  # user: "reasoners" #systemUser
+  # user: "sheggen" #unnapproved systemUser

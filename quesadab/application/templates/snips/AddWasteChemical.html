@@ -1,0 +1,41 @@
+<div class="form container text-center">
+  <strong><p style="color:#e32; display:inline">*</p> indicates required field</strong>
+  <p></p>
+  <form name="addWasChem" method="post" class="form-group">
+    <input type="hidden" name="formName" value="addWas">
+    {%  for group in wasteConfig['addWasteChemical']  %}
+        {% if group.id == 'wName' %}
+          <div class="form-group row" id="{{group['id']}}Parent">
+            <label for="{{group.id}}" class="col-xs-6">{{group.name}}: <p style="color:#e32; display:inline">*</p></label>
+            <div class="col-xs-4">
+              <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" oninput="checkName()" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control" required>
+            </div>
+          </div>
+        {% endif %}
+        {% if group.id == 'wCasNo' %}
+          <div class="form-group row" id="{{group['id']}}Parent">
+            <label for="{{group.id}}" class="col-xs-6">{{group.name}}:</label>
+            <div class="col-xs-4">
+              <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" oninput="checkName()" placeholder="{{group['placeholder']}}" class="form-control">
+            </div>
+          </div>
+        {% endif %}
+    {%endfor%}
+    <div class="col-sm-12">
+      <div class="col-sm-8 col-sm-offset-2 text-center" style="border: groove">
+          {%  for group in wasteConfig['addWasteChemical']  %}
+            {% if group.type == 'checkbox' %}
+              <input class="form-check-input" type="checkbox" id="{{group['id']}}" name="{{group['id']}}"/>
+                {{group['name']}}
+                <p></p>
+            {% endif %}
+          {%endfor%}
+        </div>
+      </div>
+    <br>
+    <div class="clearfix"></div>
+    <p></p>
+  <input class="btn btn-primary btn-lg" id="addWasteSubmit" type="submit" value="Submit">
+  </form>
+</div>
+<script src="/static/js/local/wastebuilder.js"></script>

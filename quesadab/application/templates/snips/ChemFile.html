@@ -1,0 +1,44 @@
+<script src="/static/js/local/chemFile.js"></script>
+<link href="{{ url_for('static', filename = 'css/chemTable.css') }}" rel="stylesheet">
+<div class="container">
+  <div class ="container-fluid">
+      <h1>View All Chemicals</h1>
+  </div>
+    <div class = "container-fluid">
+        <table class= "table" id = "chemtable" style="cursor: pointer;">
+            <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>CAS Number</th>
+                    <th class="nosort">Color Code</th>
+                    <th class="nosort">In Stock</th>
+                    <th class="Barcodes">Barcodes</th>
+                  </tr>
+            </thead>
+            {% for chemical in chemicals %}
+                {% if chemical.remove == False %}
+                   <tr onclick="cookieSaveAndRedirect('../ViewChemical/{{chemical.chemId}}/');"> {# The whole row is a link to the correct chemical page #}
+                        <td>{{chemical.name}}</td>
+                        <td>{{chemical.casNum}}</td>
+                        {% if config.hazards[chemical.primaryHazard] is defined %}
+                            <td>{{config.hazards[chemical.primaryHazard].hazardColor}}</td>
+                        {% else %}
+                            <td>Not Available</td>
+                        {% endif %}
+                        <td>{{contDict[chemical.name] | length}}</td>
+                        <td>
+                            {% for container in contDict[chemical.name] %}
+                                {{container.barcodeId}}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {%endif%}
+            {%endfor%}
+            <script>
+            $(document).ready(createTable());
+                        
+            </script>
+        </table>
+    </div>
+</div>
+

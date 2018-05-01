@@ -1,0 +1,60 @@
+layout:
+  - directory:
+    name: generic
+    controllers:
+      - name: generic
+        handlers:
+          - purpose: "First Page"
+            route: "/"
+            methods:
+              - GET
+            function: index
+            roles:
+              - anon
+          - purpose: "No Role"
+            route: "/norole"
+            methods:
+              - GET
+            function: noRoleFound
+            roles:
+              - anon
+  - directory:
+    name: stu
+    controllers:
+      - name: students
+        handlers:
+        - purpose: "Collect the user's happiness."
+          route: "/stu/happy"
+          methods: 
+            - GET
+          function: stuHappy
+          roles: 
+            - students
+        - purpose: "Find out how sad they are."
+          route: "/stu/sad/<int:sadness>"
+          methods:
+            - GET
+            - POST
+          function: stuSad
+          roles: 
+            - students
+  - directory:
+    name: fac
+    controllers:
+      - name: superUser
+        handlers:
+        - purpose: "Collect the user's happiness."
+          route: "/fac/happy"
+          methods: 
+            - GET
+          function: facHappy
+          roles: 
+            - students
+        - purpose: "Find out how sad they are."
+          route: "/fac/sad/<int:sadness>"
+          methods:
+            - GET
+            - POST
+          function: facSad
+          roles: 
+            - students

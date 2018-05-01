@@ -1,0 +1,42 @@
+<div class = "container">
+  <h1>Checked Out Containers</h1>
+  <table class= "table table-hover" style="cursor: pointer;">
+    <thead>
+      <tr>
+        <td>Chemical</td>
+        {%  for field in contConfig['containerInformation']  %} {# Show all information about the container #}
+          {%  if "Unit" not in field.name  %}
+            <td>{{field.name}}</td>
+          {%  endif  %}
+        {%  endfor  %}
+        <td>Checked Out To</td> {# Also show who it was checked out to, who it was checked out by, and why they checked it out #}
+        <td>Checked Out By</td>
+        <td>Reason</td>
+      </tr>
+    </thead>
+      {% for container in containers %}
+      <tr>
+          <td>{{container.chemId.name}}</td>
+            {%  for field in contConfig['containerInformation']  %}
+              {%  set attribute = field.id  %}
+                {%  if attribute != "capacityUnit" and attribute != "currentQuantityUnit" %}
+                  {%  if attribute == "capacity" or attribute == "currentQuantity" %} {# Combining quantity and unit into one cell of the table #}
+                    <td>{{container[attribute]}} {{container[attribute + "Unit"]}}</td>
+                  {% elif attribute == "storageId"  %}
+                    {% if container[attribute].roomId is defined %}
+                      <td>{{container[attribute].roomId.floorId.buildId.name}} {{container[attribute].roomId.name}}</td> {# Check if room name and storage name are the same #}
+                    {% else %}
+                      <td>{{container.roomId.floorId.buildId.name}} {{container.roomId.name}}</td>
+                    {% endif %}
+                  {%  else  %}
+                    <td>{{container[attribute]}}</td>
+                  {%  endif  %}
+                {%  endif  %}
+              {%  endfor  %}
+              <td>{{container.forProf}}</td>
+              <td>{{container.checkedOutBy}}</td>
+              <td>{{container.checkOutReason}}</td>
+      </tr>
+      {% endfor %}
+  </table>
+ </div>

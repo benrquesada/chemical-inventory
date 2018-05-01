@@ -1,0 +1,21 @@
+<div clss="container">
+ <div class="container-fluid">
+    {% if state == 1 %}
+      <h2><center>Migrate {{inputBar}} container of {{chemInfo.name}}</center></h2>
+      {% include 'snips/addContainer.html' %}
+    {% elif state == 2 %}
+      <h2><center>Migrate Chemical</center></h2>
+      {% include 'snips/chemMigration.html' %}
+    {% else %}
+    <h1>Migrate Container</h1>
+    <div class = "container-fluid">
+      <form name="searchBcode" id="searchBcode" method="post" class="form-group">
+          <label class="label-control" for="barcodeID">Barcode: </label>
+          <input type="hidden" name="formName" value="searchBcode"/>
+          <input class="form-control" type="text" id="barcodeID" name = "barcodeID" autofocus required>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+</div>
+<script src="/static/js/local/alertFade.js"></script>

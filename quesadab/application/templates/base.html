@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang=en>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!--ALL JS IMPORTS-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script> src="/static/jquery-2.2.4.min.js"</script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{{ url_for('static', filename = 'js/jquery-2.2.4.min.js') }}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ url_for('static', filename = 'js/bootstrap.min.js') }}"></script>
+    <!--File for the dynamic search bar-->
+    <script  src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <!-- Include library for barcode generation -->
+    <script src="{{ url_for('static', filename = 'js/JsBarcode.code128.min.js') }}"></script>
+
+    <!--ALL CSS IMPORTS -->
+    <link href = "//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.12/datatables.min.js"></script>
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename = 'css/readable.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename = 'css/customStyles.css') }}" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{config.application.title}}</title>
+  </head>
+  <body>
+
+    {% include "Navigation/navMenu.html" %}
+    {% include "snips/messagesSnip.html" %}
+
+    {% block body %}{% endblock %}
+
+    <div class="clearfix"></div>
+    <footer class = footer>
+      <div class="container narrow row-fluid">
+      <center>Any suggestions about the system? <a href="mailto:leslie_kaylor@berea.edu">Email Us.</a></center>
+      </div>
+    </footer>
+  </body>
+
+</html>

@@ -1,0 +1,74 @@
+Building:
+    edit: &buildAdd
+      - name: "Name"
+        id: "name"
+        type: "text"
+        required: "true"
+        disabled: ""
+      - name: "Number of Floors"
+        id: "numFloors"
+        type: "number"
+        required: "true"
+        disabled: "disabled"
+      - name: "Address"
+        id: "address"
+        type: "text"
+        required: "false"
+        disabled: ""
+    add: *buildAdd
+
+Floor:
+    edit: &floorAdd
+      - name: "foreignKey"
+        id: "buildId"
+        type: "hidden"
+      - name: "Floor Name"
+        id: "name"
+        type: "text"
+        required: "true"
+    add: *floorAdd
+
+Room:
+    edit: &roomAdd
+      - name: "foreignKey"
+        id: "floorId"
+        type: "hidden"
+      - name: "Name"
+        id: "name"
+        type: "text"
+        required: "true"
+    add: *roomAdd
+
+Storage:
+    edit: &storAdd
+      - name: "foreignKey"
+        id: "roomId"
+        type: "hidden"
+      - name: "Name"
+        id: "name"
+        type: "text"
+      - name: "Flammable"
+        id: "flammable"
+        type: "checkbox"
+      - name: "Health Hazard"
+        id: "healthHazard"
+        type: "checkbox"
+      - name: "Oxidizer"
+        id: "oxidizer"
+        type: "checkbox"
+      - name: "Organic Acid"
+        id: "orgAcid"
+        type: "checkbox"
+      - name: "Inorganic Acid"
+        id: "inorgAcid"
+        type: "checkbox"
+      - name: "Base"
+        id: "base"
+        type: "checkbox"
+      - name: "Peroxide"
+        id: "peroxide"
+        type: "checkbox"
+      - name: "Pressure"
+        id: "pressure"
+        type: "checkbox"
+    add: *storAdd

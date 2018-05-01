@@ -1,0 +1,42 @@
+from openpyxl import Workbook
+import datetime
+from application import app
+from application.config import *
+from application.queries.locationReportQueries import *
+from application.queries.hazardReportQueries import *
+
+def exportExcel(title, row_headers, indexes, objects):
+    book = Workbook()
+    sheet = book.active
+    sheet.title = title
+    sheet.append(row_headers)
+    book.save(filename = config["export"]["path"])
+
+def genLocationReport(loc_id):
+    """
+    Returns a file of all chemicals and containers in a location
+    """
+    print loc_id
+    #for cont in getChemInStor(loc_id):
+    #    print cont.chemId.name
+    #for cont in getChemInRoom(loc_id):
+    #    print cont.barcodeId
+    #for cont in getChemInFloor(loc_id):
+    #    print cont.barcodeId
+    #for cont in getChemInBuild(loc_id):
+    #    print cont.barcodeId
+    for cont in getIBFlamLiquids():
+        print cont.barcodeId
+    return 0
+
+def genHazardReport(building):
+    """
+    Returns the quantity of each hazard by floor in building
+    """
+    return 0
+
+def genSpecialHazardList():
+    """
+    Returns all special hazards (Peroxide, Pressure, Toxin/Time, Req_Stabalizer)
+    """
+    return 0

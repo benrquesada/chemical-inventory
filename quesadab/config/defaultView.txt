@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div>
+  <strong>FIXME</strong>: This is the view for the function <strong style="color: red;">VIEWFUNCTION</strong>.
+</div>
+
+<div>
+  <strong>FIXME</strong>: It serves the route <strong style="color: red;">VIEWROUTE</strong>.
+</div>
+
+{% endblock %}

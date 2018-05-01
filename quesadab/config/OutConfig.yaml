@@ -1,0 +1,32 @@
+page: "Check Out"
+
+formName: "checkOut"
+
+inputs:
+  - name: "Chemical Name:"
+    id: "chemId" # This may need to change
+    type: "text"
+    autoPop: "true"
+  - name: "Primary Hazard:"
+    id: "primaryHazard"
+    type: "text"
+    autoPop: "true"
+  - name: "Previous Location:"
+    id: "prevStorageId" #This should change to whatever will get the full location information
+    type: "text"
+    autoPop: "true"
+  - name: "Previous Quantity:"
+    id: "prevQuantity" # This should change to whatever will get the full quantity info
+    type: "text"
+    autoPop: "true"
+  - name: "New Location:"
+    id: "storageId" # This may need to change
+    type: "select"
+    special: "required"
+  - name: "Reason for Checkout:"
+    id: "forClass"
+    type: "text"
+  - name: "Person Responsible:"
+    id: "forProf"
+    type: "text"
+    special: "required"

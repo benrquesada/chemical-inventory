@@ -1,0 +1,47 @@
+page: "Container Return"
+
+formName: "checkIn"
+
+options: &units
+  - measure: "Weight"
+    units:
+      - "gram (g)"
+      - "kilogram (kg)"
+      - "pound (lb)"
+  - measure: "Volume"
+    units:
+      - "ounce (oz)"
+      - "gallon (gal)"
+      - "liter (L)"
+      - "milliliter (mL)"
+
+inputs:
+  - name: "Chemical Name:"
+    id: "chemId" # This may need to change
+    type: "text"
+    autoPop: "true"
+  - name: "Primary Hazard:"
+    id: "primaryHazard"
+    type: "text"
+    autoPop: "true"
+  - name: "Previous Location:"
+    id: "prevStorageId" #This should change to whatever will get the full location information
+    type: "text"
+    autoPop: "true"
+  - name: "Previous Quantity:"
+    id: "prevQuantity" # This should change to whatever will get the full quantity info
+    type: "text"
+    autoPop: "true"
+  - name: "Current Location:" #This may be unclear... maybe 'New Location'
+    id: "storageId" # This may need to change
+    type: "select"
+    special: "required"
+  - name: "Current Quantity:"
+    id: "currentQuantity" # This may also need to change
+    type: "number"
+    special: "required"
+  - name: "Current Unit:"
+    id: "currentQuantityUnit"
+    type: "select"
+    options: *units
+    special: "required"

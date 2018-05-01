@@ -1,0 +1,265 @@
+<script src="/static/js/local/fillEditForm.js"></script>
+<script src="/static/js/local/printBarcode.js"></script>
+<div class="col-sm-8 col-sm-offset-2">
+  <h1>{{chemInfo.name}} Information</h1>
+  <a href="{{chemInfo.sdsLink}}" target="blank"><h5>Safety Data Sheet</h5></a>
+
+  {% if authLevel == "admin" %}
+    {% if containers | length == 0 %} {# If there are no containers currently referencing this chemical, then show delete button #}
+    <div align="left">
+        <button type="button" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteModal" style="margin-bottom:7px;">Delete {{chemInfo.name}} </button>
+      </div>
+      {# Modal Starts #}
+        <div class="modal fade" id="deleteModal" role="dialog">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-labeledby="deleteLabel">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                      <h4 class="modal-title" id="deleteLabel">Delete {{chemInfo.name}} from the system.</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                      This will remove {{chemInfo.name}} from the system. Are you sure you want to delete this chemical?
+                    </div>
+                    <div class="modal-footer">
+                      <a class="btn btn-danger" href="delete/">Delete</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      {#Modal Ends #}
+    {% endif %}
+    {% endif %}
+
+  {% if config.hazards[chemInfo.primaryHazard] is defined %}
+    <h3 style="float:left; background-color: {{config.hazards[chemInfo.primaryHazard].hexColor}}; color: {{config.hazards[chemInfo.primaryHazard].textColor}}">Color Code: {{config.hazards[chemInfo.primaryHazard].hazardColor}} ({{chemInfo.primaryHazard}})</h3>
+  {% else %}
+    <h3>Color Code: Not Available</h3>
+  {% endif %}
+</div>
+<div class="col-md-8 col-md-offset-2">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#containers">Containers</a></li>
+        <li><a data-toggle="tab" href="#info">Information</a></li>
+        <li><a data-toggle="tab" href="#hazards">Hazards</a></li>
+        {% if (authLevel == 'admin' or authLevel == 'systemAdmin') %}
+          <li><a data-toggle="tab" href="#edit">Edit Chemical</a></li>
+          {% set chemName = (chemInfo.name) %}
+          <li><a data-toggle="tab" href="#addCont">Add a new Container</a></li>
+        {% endif %}
+        {# example code for tabs found here: http://jsfiddle.net/xfw8t/12/ #}
+    </ul>
+
+    <div class="tab-content">
+      {# Table of all containers that is seen when the 'Containers' tab is selected #}
+        <div id="containers" class="tab-pane fade in active">
+          <table class="table" id="containers">
+            <thead>
+              <tr>
+                {%  for field in contConfig['containerInformation']  %}
+                  {%  if "Unit" not in field.name  %}
+                    <td>{{field.name}}</td>
+                  {%  endif  %}
+                {%  endfor  %}
+              </tr>
+            </thead>
+            {%  for container in containers  %}
+              {% if (authLevel == 'admin' or authLevel == 'systemAdmin') %}
+                {% if container.checkedOut != True %}
+                  <tr class="success" style="cursor: pointer">
+                {% else %}
+                  <tr class="danger" style="cursor: pointer">
+                {% endif %}
+              {% else %}
+                {% if container.checkedOut != True %}
+                  <tr class="success" style="vertical-align:bottom">
+                {% else %}
+                  <tr class="danger" style="vertical-align:bottom">
+                {% endif %}
+              {% endif %}
+                {%  for field in contConfig['containerInformation']  %}
+                  {%  set attribute = field.id  %}
+                    {%  if attribute != "capacityUnit" and attribute != "currentQuantityUnit" %}
+                      {%  if attribute == "capacity" or attribute == "currentQuantity" %}
+                        <td>{{container[attribute]}} {{container[attribute + "Unit"]}}</td>
+                      {% elif attribute == "storageId"  %}
+                        {% if container[attribute].name == container[attribute].roomId.name %}
+                          <td>{{container[attribute].roomId.floorId.buildId.name}} Building, Room {{container[attribute].roomId.name}}</td>
+                        {% else %}
+                          <td>{{container[attribute].roomId.floorId.buildId.name}} Building, Room {{container[attribute].roomId.name}}, {{container[attribute].name}}</td>
+                        {% endif %}
+                      {% elif attribute == "barcodeId" %}
+                        <td>
+                          <a href="../../ContainerInfo/{{chemInfo.chemId}}/{{container.barcodeId}}/">
+                            <div class="barcode" id="barcodeDiv{{container.barcodeId}}">
+                              <div class="printInfo" style="font-size: small;">
+                                {{chemInfo.name}}
+                              </div>
+                              <svg name="barcodeSVG" id="barcode{{container.barcodeId}}"></svg>
+                              <div class="printInfo" style="font-size: x-small;">
+                                {% with date = container.receiveDate %}
+                                  Received on: {{date | formatDateTime}}
+                                {% endwith %}
+                              </div>
+                            </div>
+                          </a>
+                        </td> {# Creating barcode using JsBarcode library found here: http://lindell.me/JsBarcode #}
+                          <script type="text/javascript">
+                            JsBarcode("#barcode{{container.barcodeId}}", "{{container.barcodeId}}", {
+                              height:30,
+                              fontSize: 15,
+                              background: '' //set value to none to match background color of table row
+                            });
+                          </script>
+                      {% elif attribute == 'checkedOut' %}
+                        {% if container[attribute] == True %}
+                          <td style="text-align:center; vertical-align: middle;"><span class="glyphicon glyphicon-ban-circle"></span></td>
+                        {% else %}
+                          <td style="text-align:center; vertical-align: middle;"><span class="glyphicon glyphicon-ok"></span></td>
+                        {% endif %}
+                      {%  else  %}
+                        <td>{{container[attribute]}}</td>
+                      {%  endif  %}
+                    {%  endif  %}
+                {%  endfor  %}
+                <td style="vertical-align: middle;"><span class="glyphicon glyphicon-print" id="{{container.barcodeId}}"></span></td>
+              </tr>
+              {%  endfor  %}
+            </table>
+            {% if containers | length == 0 %}
+            <div class="text-center">
+                <hr>
+                <b>No Containers</b>
+              </div>
+            {% endif %}
+        </div>
+
+        <div id="info" class="tab-pane fade">
+          {# Table of all chemical information that is shown when 'info' tab is selected #}
+          <table class="table table-striped">
+          {% for field in chemConfig['addChemInputs'] %}
+            {% set attribute = field.name %}
+              {% if attribute == "Safety Data Sheet Link" %}
+                <tr>
+                  <td>{{attribute}}</td>
+                  <td><a href="{{chemInfo[field.id]}}" target="blank">MSDS Online ({{chemInfo.name}})</a></td>
+                </tr>
+              {% elif field.small is defined %}
+                <tr>
+                  <td>{{attribute}}</td>
+                  <td>{{chemInfo[field.id]}} &#176F</td>
+                </tr>
+              {% else %}
+              <tr>
+                <td>{{attribute}}</td>
+                <td>{{chemInfo[field.id]}}</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+          </table>
+        </div>
+
+        <div id="hazards" class="tab-pane fade">
+          {# Show all hazards or chemical (nfpa, hmis, and pictograms) #}
+          {% if hazardList|length > 0 %}
+            <div class="col-sm-6 col-sm-offset-3 text-center" style="padding-top: 2%">
+              <h4>Hazard Communication Standard Pictograms</h4>
+                {% for hazardPict in hazardList %}
+                  <img src="{{hazardPict[0]}}" alt="{{hazardPict[1]}}">
+                {% endfor %}
+            </div>
+          {% endif %}
+          
+          <div class="col-sm-6 text-center">
+            <table class="diamond">
+              <tr>
+                <td id="flammableCell">
+                  <div class="textRotate">
+                    {% if chemInfo['flammable'] %}
+                      {{chemInfo['flammable']}}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
+                </td>
+                <td id="reactiveCell">
+                  <div class="textRotate">
+                    {% if chemInfo['reactive'] %}
+                      {{chemInfo['reactive']}}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td id="healthHazardCell">
+                  <div class="textRotate">
+                    {% if chemInfo['healthHazard'] %}
+                      {{chemInfo['healthHazard']}}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
+                </td>
+                <td id="otherCell">
+                  <div class="textRotate">
+                    {% if chemInfo['other'] %}
+                      {{chemInfo['other']}}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-sm-6" style="padding-top: 10%">
+            <div class="panel panel-default text-center">
+              <div class="panel-heading">
+                <h3 class="panel-title">Hazardous Materials Identification System (HMIS)</h3>
+              </div>
+              <div class="panel-body">
+                <table class="table">
+                  <tbody>
+                    {% for row in chemConfig['HMIS'] %}
+                      <tr BGCOLOR="{{row.color}}">
+                        <td><font color="{{row.text}}">{{row.name}}</font></td>
+                        <td class="col-md-6">
+                          <font color="{{row.text}}">
+                            {{chemInfo[row.id]}}
+                          </font>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+       {% if (authLevel == 'admin' or authLevel == 'systemAdmin') %}
+          <div id="edit" class="tab-pane fade">
+            {# Uses the same form as Add New Chemical, then runs javascript to fill the values of the fields with the proper information from the database #}
+            <div class="text-center">
+              <h2>Edit</h2>
+            </div>
+            {% include "snips/AddChemical.html" %}
+            <script>
+              fillEditForm('{{chemInfo.chemId}}', "{{chemConfig | safe}}");
+            </script>
+          </div>
+
+          <div id="addCont" class="tab-pane fade">
+            <div class="text-center">
+              <h2>Add a new container</h2>
+            </div>
+            {% include "snips/addContainer.html" %}
+          </div>
+        {% endif %}
+
+    </div>
+  </div>

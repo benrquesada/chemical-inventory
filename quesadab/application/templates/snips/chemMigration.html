@@ -1,0 +1,248 @@
+<div class="form container text-center">
+  <form name="addChem" method="post" class="form-group">
+    <input type="hidden" name="formName" value="addChem">
+    <input type="hidden" name="oldPK" value="{{container.NameRaw.NameSorted}}">
+    <input type="hidden" name="migrated" value="1">
+    <input type="hidden" name="barcode" value="{{container.UniqueContainerID}}">
+    {# Goes through the chemical inputs #}
+    {%  for group in chemConfig['addChemInputs']  %}
+      <div class="form-group row" id="{{group['id']}}Parent">
+        <label for="{{group['id']}}" class="col-xs-6">{{group['name']}}:</label>
+        <div class="col-xs-4">
+        {# Checking name oninput to determine whether percentage is required or not. #}
+       	{% if group['id'] == 'name' %}
+          {# If name is equal to one already in the database, percentage should be required #}
+          <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" oninput="checkName()" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control", value="{{container.NameRaw.NameRaw}}">
+        {# If it is a casNum#}
+        {% elif group['id'] == "casNum" %}
+          <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" step="any" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control" value="{{container.NameRaw.casNo}}">
+        {# If it is a Formula #}
+        {% elif group['id'] == "formula"%}
+        <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" step="any" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control" value="{{container.NameRaw.MolecularFormula}}">
+        {# Once you get the Flash Point details you need to build out form for it #}
+        {# If it is a boilPoint #}
+        {% elif group['id'] ==  "boilPoint" %}
+        <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" step="any" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control" value={{container.NameRaw.BoilingPoint}}>
+        {# If it is a Description input#}
+        {% elif group['id'] ==  "description" %}
+        <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" step="any" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control" value="{{container.NameRaw.Description}}">
+	      {# If it is the sdsLink, add a link to msdsonline #}
+        {% elif group['id'] == "sdsLink" %}
+          <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" step="any" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control">
+          <div class="input-group-addon"><a target="blank" href="https://msdsmanagement.msdsonline.com/af807f3c-b6be-4bd0-873b-f464c8378daa/ebinder/?nas=True">Find SDS Here</a></div>
+          {#If it is not one of the above#}
+        {% else %}
+            <input id="{{group['id']}}" name="{{group['id']}}" type="{{group['type']}}" step="any" placeholder="{{group['placeholder']}}" {{group['special']}} class="form-control">
+      {% endif %}
+          <span class="form-group-addon">{{group['addon']}}</span>
+        </div>
+      </div>
+    {%endfor%}
+    {#  #}
+    {%  for group in chemConfig['addChemDropdowns']  %}
+    <div class="form-group row">
+      <label for="{{  group['name'] }}" class="col-xs-6">{{group['name']}}:</label>
+      <div class="col-xs-4">
+        {# Displays the prviouse Hazard to the User #}
+        {% if group['id'] == 'primaryHazard' %}
+          <p>CISPro value: <b>{{container.NameRaw.Id3}}</b><p>
+        {% endif %}
+        <select id="{{ group['id'] }}" name="{{  group['id']  }}" class="form-control" required>
+          <option selected disabled value="">Select One</option>
+          {# Autofill the structures #}
+          {% if group['id'] == 'structure' %}
+            {%  for selection in group['selections']  %}
+            {# Dropdown selections #}
+              {% if container.NameRaw.Organic == "1" and selection == 'Organic'%}
+                <option value="Organic" selected="selected">Organic</option>
+              {% elif container.NameRaw.Inorganic == "1" and selection == 'Inorganic' %}
+                <option value="Inorganic" selected="selected">Inorganic</option>
+              {% else %}
+                <option value="{{  selection  }}">{{  selection  }}</option>
+              {% endif %}
+            {%  endfor  %}
+          {# Autofill the state #}
+          {% elif group['id'] == 'state' %}
+            {%  for selection in group['selections']  %}
+            {# Dropdown selections #}
+              {% if container.NameRaw.State == "0" and selection == 'Solid'%}
+                <option value="Solid" selected="selected">Solid</option>
+              {% elif container.NameRaw.State == "1" and selection == 'Liquid' %}
+                <option value="Liquid" selected="selected">Liquid</option>
+              {% elif container.NameRaw.State == "2" and selection == 'Gas' %}
+                <option value="Gas" selected="selected">Gas</option>
+              {% else %}
+                <option value="{{  selection  }}">{{  selection  }}</option>
+              {% endif %}
+            {%  endfor  %}
+          {# Fills Primary Hazard Form #}
+          {% else %}
+            {%  for selection in group['selections']  %}
+            {# Dropdown selections #}
+            {# Set autofilled structure #}
+              <option value="{{  selection  }}">{{  selection  }}</option>
+            {%  endfor  %}
+          {% endif %}
+        </select>
+      </div>
+    </div>
+    {%  endfor  %}
+    <div class="form-group row">
+      <label for="nfpaDiamond" class="col-xs-6">NFPA 704:</label>
+      <div class="col-xs-4">
+        <table class="diamond" style="">
+          <tr>
+            <td id="flammableCell">
+              <div class="textRotate">
+                <select id="flammable" name="flammable" class="form-control">
+                  <option value="" selected disabled>Select One</option>
+                {% for selection in chemConfig['selections'] %}
+                  {% if container.NameRaw.Nfpa_Flamable == selection %}
+                    <option value="{{selection}}" selected="selected">{{selection}}</option>
+                  {% else %}
+                    <option value="{{selection}}">{{selection}}</option>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </td>
+            <td id="reactiveCell">
+              <div class="textRotate">
+                <select id="reactive" name="reactive" class="form-control">
+                  <option value="" selected disabled>Select One</option>
+                {% for selection in chemConfig['selections'] %}
+                  {% if container.NameRaw.Nfpa_Reactive == selection %}
+                    <option value="{{selection}}" selected="selected">{{selection}}</option>
+                  {% else %}
+                    <option value="{{selection}}">{{selection}}</option>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td id="healthHazardCell">
+              <div class="textRotate">
+                <select id="healthHazard" name="healthHazard" class="form-control">
+                  <option value="" selected disabled>Select One</option>
+                {% for selection in chemConfig['selections'] %}
+                   {% if container.NameRaw.Nfpa_Health == selection %}
+                    <option value="{{selection}}" selected="selected">{{selection}}</option>
+                  {% else %}
+                    <option value="{{selection}}">{{selection}}</option>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </td>
+            <td id="otherCell">
+              <div class="textRotate">
+                <select id="other" name="other" class="form-control">
+                  <option value="" selected disabled>Select One</option>
+                {% for selection in chemConfig['otherHazards'] %}
+                  <option value="{{selection}}">{{selection}}</option>
+                {% endfor %}
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <br>
+    <div class="col-xs-7 col-xs-offset-3">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading">
+          <h3 class="panel-title">Hazardous Materials Identification System (HMIS)</h3>
+        </div>
+        <div class="panel-body">
+          <table class="table">
+            <tbody>
+              {% for row in chemConfig['HMIS'] %}
+                <tr BGCOLOR="{{row.color}}">
+                  <td><font color="{{row.text}}">{{row.name}}</font></td>
+                  <td class="col-md-6">
+                    <select id="{{row.id}}" name="{{row.id}}" class="form-control">
+                      <option value="" disabled selected>Select One</option>
+                      {% for option in row.selections %}
+                      <option value="{{option}}">{{option}}</option>
+                      {% endfor %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <div class="form-group row">
+      <label for="pictograms">Please select the appropriate hazard pictogram(s).</label>
+      <div class="checkbox col-xs-8 col-xs-offset-2">
+        <ul>
+          {%for hazardPict in chemConfig['pictograms']%}
+          <li>
+            {% if hazardPict['id'] == "corrosivePict" and container.NameRaw.Corrosive == "1" %}
+              <input type="checkbox" name="{{hazardPict['id']}}" id="{{hazardPict['id']}}" value="{{hazardPict['id']}}" checked hidden> {# Needed for edit form. Forces form to update value of deselected checkboxes. #}
+            {% elif hazardPict['id'] == "hhPict" and container.NameRaw.Carcinogenic == "1" %}
+              <input type="checkbox" name="{{hazardPict['id']}}" id="{{hazardPict['id']}}" value="{{hazardPict['id']}}" checked hidden> {# Needed for edit form. Forces form to update value of deselected checkboxes. #}
+            {% elif hazardPict['id'] == "flamePict" and container.NameRaw.Flamable == "1" %}
+             <input type="checkbox" name="{{hazardPict['id']}}" id="{{hazardPict['id']}}" value="{{hazardPict['id']}}" checked hidden> {# Needed for edit form. Forces form to update value of deselected checkboxes. #}
+            {% elif hazardPict['id'] == "gcPict" and container.NameRaw.State == "2" %}
+             <input type="checkbox" name="{{hazardPict['id']}}" id="{{hazardPict['id']}}" value="{{hazardPict['id']}}" checked hidden> {# Needed for edit form. Forces form to update value of deselected checkboxes. #}
+             {% else %}
+              <input type="checkbox" name="{{hazardPict['id']}}" id="{{hazardPict['id']}}" value="{{hazardPict['id']}}" hidden> {# Needed for edit form. Forces form to update value of deselected checkboxes. #}
+            {% endif %}
+              <label for="{{hazardPict['id']}}" class="hazardLabel">
+                  <img src="{{hazardPict['pict']}}" id="{{hazardPict['id']}}" alt="{{hazardPict['alt']}}" class="hazardRadio"></img>
+                </label>
+              </input>
+              <input type="hidden" name="{{hazardPict['id']}}" id="{{hazardPict['id']}}" value="">
+            </li>
+          {%endfor%}
+        </ul>
+      </div>
+    </div>
+
+    <br>
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <label>Time-Sensitive Hazards</label>
+      </div>
+      <div class="col-sm-8 col-sm-offset-2 text-left" style="border: groove">
+        {%  for check in chemConfig['timeSensitive']  %}
+          <div class="col-sm-6">
+            <label>
+              <input class="form-check-input" type="checkbox" id="{{check['id']}}" name="{{check['id']}}"/>
+              {{check['name']}}
+              <input class="form-check-input" type="hidden" id="{{check['id']}}" name="{{check['id']}}" value=""> {# Needed for edit form. Forces form to update value of deselected checkboxes. #}
+            </label>
+          </div>
+        {%  endfor  %}
+      </div>
+    </div>
+
+    <br>
+    <div class="form-group row">
+        <div class="col-sm-12">
+          <label>Other Hazards</label>
+        </div>
+        <div class="col-sm-8 col-sm-offset-2 text-left" style="border: groove">
+          {%  for check in chemConfig['addChemChecks']  %}
+            <div class="col-sm-6">
+              <label>
+                <input class="form-check-input" type="checkbox" id="{{check['id']}}" name="{{check['id']}}"/>
+                {{check['name']}}
+                <input class="form-check-input" type="hidden" id="{{check['id']}}" name="{{check['id']}}" value=""> {# Needed for edit form. Forces form to update value of deselected checkboxes. #}
+              </label>
+            </div>
+          {%  endfor  %}
+        </div>
+    </div>
+
+    <br>
+    <div class="clearfix"></div>
+  <input class="btn btn-primary btn-lg" id="addChemSubmit" type="submit" value="Submit">
+  </form>
+</div>
+<script src="/static/js/local/pictSelect.js"></script>
+<script src="/static/js/local/checkName.js"></script>

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="collapse navbar-collapse">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a data-toggle="tab" href="#addwaste">Add Waste Container</a>
+    </li>
+
+    <li>
+      <a data-toggle="tab" href="#wasteinventory">Waste Inventory</a>
+    </li>
+
+  </ul>
+
+  <div class = "tab-content">
+    <div id = "addwaste" class = "tab-pane fade in active">
+        <div class = "text-center tab-content">
+          <h2>Add New Waste Container</h2>
+        </div>
+      {% include "snips/AddWasteContainer.html" %}
+    </div>
+
+    <div id = "wasteinventory" class = "tab-pane fade">
+        <div class = "text-center tab-content">
+          <h2>Comming Soon!</h2>
+        </div>
+
+    </div>
+{% endblock %}

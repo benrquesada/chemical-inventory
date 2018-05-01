@@ -1,0 +1,75 @@
+buildings:
+  - name: "Science"
+    numFloors: 5
+    address: "101 Chestnut St. Berea KY"
+    rooms:
+      - name: "13A"
+        floorId: 1
+        storages:
+          - name: "13A"
+      - name: "13C"
+        floorId: 1
+        storages:
+          - name: "13C"
+      - name: "104"
+        floorId: 2
+        storages:
+          - name: "104"
+      - name: "202"
+        floorId: 3
+        storages:
+          - name: "202"
+      - name: "203"
+        floorId: 3
+        storages:
+          - name: "203"
+      - name: "204"
+        floorId: 3
+        storages:
+          - name: "204"
+      - name: "210"
+        floorId: 3
+        storages:
+          - name: "210"
+      - name: "301"
+        floorId: 4
+        storages:
+          - name: "301"
+      - name: "305"
+        floorId: 4
+        storages:
+          - name: "305"
+      - name: "306"
+        floorId: 4
+        storages:
+          - name: "306"
+      - name: "309"
+        floorId: 4
+        storages:
+          - name: "309"
+      - name: "310"
+        floorId: 4
+        storages:
+          - name: "310"
+      - name: "313"
+        floorId: 4
+        storages:
+          - name: "313"
+      - name: "404"
+        floorId: 5
+        storages:
+          - name: "404"
+      - name: "405"
+        floorId: 5
+        storages:
+          - name: "405"
+
+  - name: 'Frost'
+    numFloors: 3
+    address: "101 Chestnut St. Berea KY"
+    rooms:
+      - name: "04"
+        floorId: 6
+        storages:
+          - name: "04"
+

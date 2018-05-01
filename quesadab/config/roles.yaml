@@ -1,0 +1,23 @@
+# Only certain people can be admins in this app
+admin:
+  - ubuntu #For Testing
+  - hooverk
+  - insengrim 
+#  - database Roles
+
+systemAdmin:
+#   - ubuntu
+  - group admin
+  - AD systemAdmin
+
+superUser:
+#   - ubuntu
+  - group admin
+  - AD superUser
+
+systemUser:
+#   - ubuntu
+  - group superUser
+
+anon:
+  - ANY

@@ -1,0 +1,40 @@
+<!--This is the navigation bar that is found at the top of the page-->
+<nav class="navbar navbar-inverse">
+</ul>
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+       <a class="navbar-brand" href="/">
+              <img class="logo" src="/static/pictograms/skyz-logo2.png" alt="skyz logo">
+            </a>
+    </div>
+      <div class = "collapse navbar-collapse"  id="myNavbar">
+        <ul class="nav navbar-nav">
+
+        {% for menuItem in config[authLevel] %}
+        {% if menuItem['link'] == request.path %}
+            <li class="active">
+              <a href="{{menuItem['link']}}">{{menuItem['title']}}</a>
+            </li>
+          {% else %}
+            <li><a href="{{menuItem['link']}}">{{menuItem['title']}}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if authLevel == "admin" or authLevel == "systemAdmin" %}
+        <li>
+          <a class="btn btn-primary" href="/AddWasteContainer">Waste Management</a>
+        </li>
+        {% endif %}
+        <li>
+          <a class="btn btn-warning" href="https://login.berea.edu/idp/profile/Logout">Log Out</a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>

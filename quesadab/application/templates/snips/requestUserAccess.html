@@ -1,0 +1,20 @@
+<div class= "container text-center"><h3>Request User Access</h3>
+<div class= "form col-sm-offset-3 col-sm-4">
+  <form name = "requestuser" method = "post" class ="form-group">
+    {% for fields in userConfig['useraccess']%}
+    <div class = "form-group row">
+      <label for="{{fields['name']}}" class = "col-sm-4">{{fields['name']}}</label>
+      <div class = "col-sm-8">
+        {% if fields['special'] == "required" %}
+        <input id="{{fields['id']}}" name="{{fields['id']}}" type="{{fields['type']}}" value = "{{fields['value']}}" placeholder="{{fields['placeholder']}}" {{fields['special']}} class="form-control">
+        {% endif %}
+        
+      </div>
+    </div>
+    {%endfor%}
+      
+  <input class="btn btn-success" id="addChemSubmit" type="submit" value="Submit">
+  </form>
+</div>
+ 
+</div>

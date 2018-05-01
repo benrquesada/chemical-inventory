@@ -1,0 +1,90 @@
+useraccess:
+    - name: "User Name"
+      id: "username"
+      type: "text"
+      placeholder: "username"
+      special: "required"
+      value: ""
+
+    - name: "Report To"
+      id: "reportto"
+      type: "text"
+      placeholder: "Supervisor's Name"
+      special: "required"
+      value: ""
+
+    - name: "Email Address"
+      id: "emailadd"
+      type: "text"
+      placeholder: "Email Address"
+      special: "required"
+      value: ""
+
+    - name: ""
+      id: "auth_level"
+      type: "hidden"
+      placeholder: "Supervisor's Name"
+      special: "required"
+      value: "student"
+
+    - name: ""
+      id: "start_date"
+      type: "hidden"
+      placeholder: "Start Date"
+      special: "required"
+      value: ""
+
+    - name: ""
+      id: "end_date"
+      type: "hidden"
+      placeholder: "End Date"
+      special: "required"
+      value: ""
+
+
+maaccess:
+    - name: "User Name"
+      id: "username"
+      type: "text"
+      placeholder: "username"
+      special: "required"
+
+    - name: "Report To"
+      id: "reportto"
+      type: "text"
+      placeholder: "Supervisor's Name"
+      special: "required"
+
+    - name: "Start Date"
+      id: "start_date"
+      type: "datetime"
+      placeholder: "Start Date"
+      special: "calendar"
+
+    - name: "End Date"
+      id: "end_date"
+      type: "datetime"
+      placeholder: "End Date"
+      special: "calendar"
+
+
+    - name: "Email Address"
+      id: "emailadd"
+      type: "text"
+      placeholder: "Email Address"
+      special: "required"
+
+    - name: "Auth Level"
+      id: "auth_level"
+      type: "dropdown"
+      placeholder: "Select One"
+      special: &diffusers
+        - "System Adminstrator"
+        - "fauser"
+        - "student"
+
+
+
+
+
+

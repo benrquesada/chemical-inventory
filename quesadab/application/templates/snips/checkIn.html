@@ -1,0 +1,82 @@
+<script src="/static/js/local/checkBar.js"></script>
+<h3>{{pageConfig['page']}}</h3>
+    <div class="form">
+      <strong><p style="color:#e32; display:inline">*</p> indicates required field</strong>
+        <form name="{{pageConfig[formName]}}" id="checkInForm" class="form" method="post">
+          <div class="form-group">
+                <input type="hidden" name="formName" value="checkInForm">
+                <label class="label-control required" for="barcodeId">Barcode: <p style="color:#e32; display:inline">*</p></label>
+                <input class="form-control" type="text" id="barcodeId" name="barcodeId" required oninput="checkBar('{{pageConfig['formName']}}')"  autofocus class="required" value={{container.barcodeId}}> {# This field is automatically selected on page load. When barcode is entered, checkBar() will get container's info #}
+            <script>checkBar("{{pageConfig['formName']}}")</script>
+            </div>
+            {% for group in pageConfig['inputs'] %}
+                {% if group.autoPop == "true" %} {# These are the fields that checkBar will fill, they are not editable, and are helpful for the user to see #}
+                      <div class="form-group">
+                          <label class="label-control" for="{{group.id}}">{{group.name}}</label>
+                              <input class="form-control d" type="{{group.type}}" id="{{group.id}}" name="{{group.id}}" readonly>
+                      </div>
+                {% else %} {# These are fields that the user will add info. They are disabled at first, but once a valid barcode is entered, checkBar() enables them #}
+                    {%  if group.type == 'select'  %}
+                        {% if group.id == 'storageId' %}
+                          <div class="form-group">
+                            <label for="storage" class="label-control">{{group['name']}} <p style="color:#e32; display:inline">*</p></label>
+                              <select id="storage" name="storageId" class="form-control d" required disabled>
+                                <option selected disabled value="">Select One</option>
+                                {% for building in buildingList %}
+                                  <optgroup label="{{building.name}} Building"></optgroup>
+                                  {% for storage in storageList %}
+                                    {% if storage.roomId.floorId.buildId.bId == building.bId %}
+                                      {% if storage.roomId.name == storage.name %}
+                                        <option value="{{storage.sId}}">Room {{storage.roomId.name}}</option>
+                                      {% else %}
+                                        <option value="{{storage.sId}}">Room {{storage.roomId.name}} ({{storage.name}})</option>
+                                      {% endif %}
+                                    {% endif %}
+                                  {% endfor %}
+                                {%endfor%}
+                              </select>
+                          </div>
+                        {% else %}
+                            <div class="form-group">
+                              <label for="{{  group['name'] }}" class="label-control">{{  group['name']  }}</label>
+                                <select id="{{group['id']}}" name="{{group['id']}}" class="form-control d" step='any' disabled {{group.special}}>
+                                  <option selected disabled value="">Select One</option>
+                                  {% for measure in group.options %}
+                                    {% if measure.measure != "" %}
+                                      <optgroup label="{{measure.measure}}"></optgroup>
+                                      {% for unit in measure.units %}
+                                        {% if unit == container.currentQuantityUnit %}
+                                          <option selected value="{{ unit }}">{{ unit }}</option>
+                                        {% else %}
+                                          <option value="{{ unit }}">{{ unit }}</option>
+                                        {% endif%}
+                                      {% endfor %}
+                                    {% else %}
+                                      {% for unit in measure.units %}
+                                        <option value="{{ unit }}">{{ unit }}</option>
+                                      {% endfor %}
+                                    {% endif %}
+                                  {% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                      {% if group.special == 'required' %}
+                        <div class="form-group">
+                            <label class="label-control {{group['special']}}" for="{{group.id}}">{{group.name}} <p style="color:#e32; display:inline">*</p></label>
+                                <input class="form-control d" type="{{group.type}}" id="{{group.id}}" name="{{group.id}}" {{group.special}} min="0.01" max="10000" step="0.01" disabled>
+                        </div>
+                      {% else %}
+                        <div class="form-group">
+                          <label class="label-control {{group['special']}}" for="{{group.id}}">{{group.name}}</label>
+                              <input class="form-control d" type="{{group.type}}" id="{{group.id}}" name="{{group.id}}" {{group.special}} disabled>
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            <div class="form-group pull-right">
+                <button type="submit" class="btn btn-primary" id="submit" disabled>Submit</button>
+            </div>
+        </form>
+    </div>

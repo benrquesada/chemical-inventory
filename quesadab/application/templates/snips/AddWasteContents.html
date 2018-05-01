@@ -1,0 +1,55 @@
+<script src="/static/js/local/editUserModals.js"></script>
+<div class="container">
+  <div class="row">
+    <h3>View All Waste</h3>
+  </div>
+  <div class="row">
+    <div class="col-sm-9">
+    </div>
+    <div class="col-sm-3">
+      <form method="post">
+        <input class="btn btn-success" id="" type="submit" value="Add Waste Chemical">
+      </form>
+    </div>
+  </div>
+
+
+    <div class="container-fluid">
+        <table class="table" id="usersTable">
+            <thead>
+                <th>Waste ID</th>
+                <th>Contents</th>
+                <th>Hazards</th>
+                <th>Storage Date</th>
+            </thead>
+            <tbody>
+                {% for user in usersList %}
+                    <tr>
+                        <td>
+                            <a class="glyphLink" data-toggle="modal" data-target="#editUserModal"
+                            data-userName="{{user.username}}" data-authlevel="{{user.auth_level}}"
+                            data-userid="{{user.userId}}" aria-hidden="true">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>
+                            {{config.roles[user.auth_level].printable}}</td>
+                        <td>{{user.first_name}} {{user.last_name}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.reportto}}</td>
+                        <td>
+                            <a class="glyphLink" data-toggle="modal" data-target="#deleteUserModal"
+                            data-username="{{user.username}}" aria-hidden="true">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+            <script>
+            $(document).ready(function(){
+            $('#usersTable').DataTable();
+            });
+            </script>
+        </table>
+    </div>
+</div>

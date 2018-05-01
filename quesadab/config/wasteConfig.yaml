@@ -1,0 +1,113 @@
+#Used with controller to pass in information when rendering the html.
+#The form data can then be saved and used to
+#create the proper rows for their respective waste components.
+
+
+options: &units
+  - measure: "Weight"
+    units:
+      - "gram (g)"
+      - "kilogram (kg)"
+      - "pound (lb)"
+  - measure: "Volume"
+    units:
+      - "ounce (oz)"
+      - "gallon (gal)"
+      - "liter (L)"
+      - "milliliter (mL)"
+
+addWasteRequired:
+    - name: "Waste Quantity"
+      id: "wQuant"
+      type: "number"
+      placeholder: "How much is currently in the container?"
+      special: "required"
+    - name: "Quantity Unit"
+      id: "wQuantUnit"
+      type: "select"
+      options: *units
+      special: "required"
+    - name: "State"
+      id: "wState"
+      type: "dropdown"
+      special: "required"
+      selections:
+        - "Solid"
+        - "Liquid"
+        - "Mixture"
+
+
+addWasteNotRequired:
+    - name: "Generator"
+      id: "wProf"
+      type: "text"
+      placeholder: "Who produced this waste"
+    - name: "Department"
+      id: "wDept"
+      type: "text"
+      placeholder: "Department (e.g. CHM)"
+    - name: "Course"
+      id: "wCourse"
+      type: "text"
+      placeholder: "Course # (e.g. 221)"
+    - name: "Building"
+      id: "wBldg"
+      type: "text"
+      placeholder: "Building (e.g. Science)"
+    - name: "Room"
+      id: "wRoom"
+      type: "text"
+      placeholder: "Room # (e.g. 310)"
+    - name: "Semester"
+      id: "wSemester"
+      type: "text"
+      placeholder: "Semester (e.g. Fall 2017)"
+
+
+addWasteChemical:
+    - name: "Name"
+      id: "wName"
+      type: "text"
+      placeholder: "Name of Chemical"
+      special: "required"
+    - name: "CAS #"
+      id: "wCasNo"
+      type: "text"
+      placeholder: "Cas Number"
+    - name: "Flameable"
+      id: "wFlam"
+      type: "checkbox"
+    - name: "Corrosive"
+      id: "wCorr"
+      type: "checkbox"
+    - name: "Toxic"
+      id: "wTox"
+      type: "checkbox"
+    - name: "Reactive"
+      id: "wReact"
+      type: "checkbox"
+    - name: "Biological"
+      id: "wBio"
+      type: "checkbox"
+    - name: "Radioactive"
+      id: "wRadio"
+      type: "checkbox"
+    - name: "General Health Hazard"
+      id: "wHealth"
+      type: "checkbox"
+    - name: "P-List Acutely Toxic"
+      id: "wPlist"
+      type: "checkbox"
+
+
+
+addWasteContents:
+    - name: "wasteID"
+      id: "wID"
+      type: "integer"
+    - name: "waste chemical ID"
+      id: "wCHEMID"
+      type: "integer"
+    - name: "rmWaste"
+      id: "renmove Waste"
+      type: "integer"

@@ -1,0 +1,189 @@
+/*Pictogram Checkboxes*/
+ul {
+  list-style-type: none;
+  padding-top: 12px;
+  color: white!important
+  
+}
+
+li {
+  display: inline-block;
+}
+
+input[type="checkbox"][id^="cb"] {
+  display: none;
+}
+
+.navbar-inverse{
+  color: white !important;
+  background-color:#1B7994;
+}
+
+.navbar-right>li>a{ /*Formats the logout button*/
+  color:white !important;
+  background-color:#EE8A25;
+  border-color:#9fa1a3;
+  border-width:1px;
+
+}
+
+.navbar-nav>li>a{ 
+  color: white !important;
+  
+  
+}
+
+.navbar-nav{
+  margin-left:  250;
+  margin-right: 0;
+}
+.navbar-brand{
+	height: 90px;
+	padding-top: 0;
+	padding-bottom: 0;
+} 
+
+
+.navbar-nav>.active>a{
+  background-color:transparent !important;
+  border-color:#9fa1a3;
+  border-width:1px;
+}
+
+.nav-tabs>li>a{
+  background-color:whitesmoke;
+  border-color:#d1d1e0;
+  border-width:1px;
+}
+
+
+.hazardLabel {
+  border: 1px solid #fff;
+  padding: 10px;
+  display: block;
+  position: relative;
+  /*margin: 10px;*/
+  cursor: pointer;
+}
+
+label:before {
+  background-color: white;
+  color: white;
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  border: 1px solid grey;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 28px;
+  transition-duration: 0.4s;
+  transform: scale(0);
+}
+
+label img {
+  height: 100px;
+  width: 100px;
+  transition-duration: 0.2s;
+  transform-origin: 50% 50%;
+}
+
+:checked + label {
+  border-color: #ddd;
+}
+
+:checked + label:before {
+  content: "✓";
+  background-color: grey;
+  transform: scale(1);
+}
+
+:checked + label img {
+  transform: scale(0.9);
+  box-shadow: 0 0 5px #333;
+  z-index: -1;
+}
+
+/*Class overloads*/
+/*edit and delete glyphicon buttons*/
+.glyphLink {
+  padding: 10px;
+  cursor: pointer;
+  text-decoration: none !important;
+  color: #3F333F;
+}
+
+.addLink {
+  margin: 10px;
+}
+
+/*Location Management tab*/
+.panel-open {
+  background-color: #696969 !important;
+  color: #fff !important;
+}
+
+.panel-closed {
+  background-color: #f5f5f5 !important;
+  color: #333333 !important;
+}
+
+/*Hides the Name and Recieved Date from Barcodes on screen*/
+.printInfo{
+    display: none;
+}
+
+.diamond{
+  width: 14vw;
+  height: 14vw;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  margin: 20%;
+}
+
+.diamond tr td{
+  border: 1px solid black;
+}
+
+.textRotate{
+  -webkit-transform: rotate(315deg);
+  -ms-transform: rotate(315deg);
+  transform: rotate(315deg);
+}
+
+#flammableCell{
+  top:0;
+  left:0;
+  background:#ff6666;
+  width: 50%;
+  height: 50%;
+}
+
+#reactiveCell{
+  top:0;
+  left:50%;
+  background:#fcff66;
+  width: 50%;
+  height: 50%;
+}
+
+#healthHazardCell{
+  top:50%;
+  left:0;
+  background:#6691ff;
+  width: 50%;
+  height: 50%;
+}
+
+#otherCell{
+  top:50%;
+  left:0;
+  background:#ffffff;
+  width: 50%;
+  height: 50%;
+  
+ 
